@@ -28,7 +28,7 @@ app.post("/currentuser", Currentuser);
 // Admins
 
 app.post("/addquiz", AdminMiddleware, AddQuiz);
-app.get("/allquiz", AllQuiz);
+app.post("/allquiz", AllQuiz);
 app.post("/singlequiz", singleQuiz);
 app.post("/solvequiz", SolveQuiz);
 

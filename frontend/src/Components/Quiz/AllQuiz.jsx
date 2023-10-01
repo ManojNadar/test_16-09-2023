@@ -3,11 +3,13 @@ import api from "../ApiConfig";
 
 const AllQuiz = () => {
   const [allQuiz, setAllQuiz] = useState([]);
-  console.log(allQuiz);
+  const [page, setPage] = useState(1);
+
+  console.log(page);
   useEffect(() => {
     async function getAllQuiz() {
       try {
-        const response = await api.get("/allquiz");
+        const response = await api.post("/allquiz", { page });
 
         if (response.data.success) {
           setAllQuiz(response.data.allQuiz);
@@ -17,7 +19,7 @@ const AllQuiz = () => {
       }
     }
     getAllQuiz();
-  }, []);
+  }, [page]);
   return (
     <>
       <h1>All Quiz</h1>
@@ -68,7 +70,7 @@ const AllQuiz = () => {
                       backgroundColor: "grey",
                     }}
                   >
-                    Option A - {quiz.ansOne}
+                    A - {quiz.ansOne}
                   </h2>
                   <h2
                     style={{
@@ -79,7 +81,7 @@ const AllQuiz = () => {
                       backgroundColor: "grey",
                     }}
                   >
-                    Option B - {quiz.ansTwo}
+                    B - {quiz.ansTwo}
                   </h2>
                   <h2
                     style={{
@@ -90,7 +92,7 @@ const AllQuiz = () => {
                       backgroundColor: "grey",
                     }}
                   >
-                    Option C - {quiz.ansThree}
+                    C - {quiz.ansThree}
                   </h2>
                   <h2
                     style={{
@@ -101,7 +103,7 @@ const AllQuiz = () => {
                       backgroundColor: "grey",
                     }}
                   >
-                    Option D - {quiz.ansFour}
+                    D - {quiz.ansFour}
                   </h2>
                 </div>
               </div>
@@ -111,6 +113,9 @@ const AllQuiz = () => {
           <div>No Quiz</div>
         )}
       </div>
+
+      <button onClick={() => setPage(page - 1)}>Previous</button>
+      <button onClick={() => setPage(page + 1)}>Next</button>
     </>
   );
 };

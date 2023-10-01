@@ -9,6 +9,7 @@ const SolveQuiz = () => {
   const [answer, setAnswer] = useState("");
   const [singleQuiz, setSingleQuiz] = useState({});
   const [answerInput, setAnswerInput] = useState(false);
+  const [page, setPage] = useState(1);
   //   console.log(allQuiz);
 
   //   console.log(singleQuiz);
@@ -24,7 +25,7 @@ const SolveQuiz = () => {
   useEffect(() => {
     async function getAllQuiz() {
       try {
-        const response = await api.get("/allquiz");
+        const response = await api.post("/allquiz", { page });
 
         if (response.data.success) {
           setAllQuiz(response.data.allQuiz);
@@ -34,7 +35,7 @@ const SolveQuiz = () => {
       }
     }
     getAllQuiz();
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     if (state?.currentuser?.role != "Student") {
@@ -78,35 +79,9 @@ const SolveQuiz = () => {
     <>
       <h1>All Quiz</h1>
 
-      {answerInput && (
-        <form onSubmit={handleSubmit}>
-          <input
-            onChange={handleChange}
-            type="text"
-            placeholder="Enter your Answer"
-            name="answer"
-          />
-          <input
-            style={{
-              backgroundColor: "greenyellow",
-              marginBottom: "1%",
-            }}
-            type="submit"
-            value="Submit Answer"
-          />
-        </form>
-      )}
-
       <div style={{ width: "100%" }}>
         {allQuiz?.length ? (
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-              flexWrap: "wrap",
-              gap: "20px 0",
-            }}
-          >
+          <div>
             {allQuiz.map((quiz) => (
               <div
                 style={{
@@ -187,11 +162,33 @@ const SolveQuiz = () => {
                 </div>
               </div>
             ))}
+
+            {answerInput && (
+              <form onSubmit={handleSubmit}>
+                <input
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="Enter your Answer"
+                  name="answer"
+                />
+                <input
+                  style={{
+                    backgroundColor: "greenyellow",
+                    marginBottom: "1%",
+                  }}
+                  type="submit"
+                  value="Submit Answer"
+                />
+              </form>
+            )}
           </div>
         ) : (
           <div>No Quiz</div>
         )}
       </div>
+
+      <button onClick={() => setPage(page - 1)}>Previous</button>
+      <button onClick={() => setPage(page + 1)}>Next</button>
     </>
   );
 };

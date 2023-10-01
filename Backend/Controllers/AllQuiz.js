@@ -2,7 +2,17 @@ import Quiz from "../Models/QuizModel.js";
 
 export const AllQuiz = async (req, res) => {
   try {
-    const allQuiz = await Quiz.find({});
+    const { page, limit = 1 } = req.body;
+
+    console.log(page);
+
+    const skipValue = (parseInt(page) - 1) * parseInt(limit);
+    const limitValue = parseInt(limit);
+
+    const allQuiz = await Quiz.find({})
+      .skip(skipValue)
+      .limit(limitValue)
+      .lean();
 
     if (allQuiz?.length) {
       return res.status(200).json({
