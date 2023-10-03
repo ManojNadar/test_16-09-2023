@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { quizContext } from "./Context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { state, logout } = useContext(quizContext);
@@ -8,38 +8,24 @@ const Navbar = () => {
 
   return (
     <>
-      <nav
-        style={{
-          width: "100%",
-          height: "80px",
-          display: "flex",
-          justifyContent: "space-around",
-          borderBottom: "2px solid red",
-          alignItems: "center",
-        }}
-      >
-        <div>
+      <nav>
+        <div className="logo">
           <h1 onClick={() => route("/")}>Quiz App</h1>
         </div>
-        <div
-          style={{
-            display: "flex",
-            width: "20%",
-            justifyContent: "space-around",
-          }}
-        >
-          <h1 onClick={() => route("/allquiz")}>All Quiz</h1>
+        <div className="allNavs">
+          <h1>All Quiz</h1>
 
           {state?.currentuser?.role == "Admin" ? (
             <h1 onClick={() => route("/addquiz")}>Add Quiz</h1>
           ) : null}
-
-          {state?.currentuser && <h1>{state?.currentuser?.name} </h1>}
         </div>
         {state?.currentuser?.name ? (
-          <button onClick={logout}>LOGOUT</button>
+          <div className="profSection">
+            <h2>{state?.currentuser?.name}</h2>
+            <NavLink onClick={logout}>LOGOUT</NavLink>
+          </div>
         ) : (
-          <button onClick={() => route("/login")}>LOGIN</button>
+          <NavLink to="/login">LOGIN</NavLink>
         )}
       </nav>
     </>

@@ -32,6 +32,8 @@ const AuthContext = ({ children }) => {
     });
   };
   const logout = () => {
+    localStorage.removeItem("quizToken");
+
     dispatch({
       type: "LOGOUT",
     });

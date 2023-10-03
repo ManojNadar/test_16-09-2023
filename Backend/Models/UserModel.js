@@ -16,8 +16,11 @@ const userShcema = new Schema({
   role: {
     type: String,
     required: true,
-    enum: ["Admin", "Student"],
-    default: "Student",
+    enum: ["Admin", "user"],
+    default: "user",
+  },
+  answer: {
+    type: [Object],
   },
 });
 

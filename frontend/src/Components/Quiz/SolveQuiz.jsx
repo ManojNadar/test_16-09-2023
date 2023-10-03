@@ -6,21 +6,12 @@ import toast from "react-hot-toast";
 
 const SolveQuiz = () => {
   const [allQuiz, setAllQuiz] = useState([]);
-  const [answer, setAnswer] = useState("");
-  const [singleQuiz, setSingleQuiz] = useState({});
-  const [answerInput, setAnswerInput] = useState(false);
   const [page, setPage] = useState(1);
+  const [radioVal, setRadioVal] = useState("");
   //   console.log(allQuiz);
-
-  //   console.log(singleQuiz);
 
   const route = useNavigate();
   const { state } = useContext(quizContext);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setAnswer({ ...answer, [name]: value });
-  };
 
   useEffect(() => {
     async function getAllQuiz() {
@@ -38,157 +29,104 @@ const SolveQuiz = () => {
   }, [page]);
 
   useEffect(() => {
-    if (state?.currentuser?.role != "Student") {
+    if (state?.currentuser?.role != "user") {
       route("/");
     }
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const nextQn = async (id, qn, crtAns, userAns) => {
+    console.log(id, qn, crtAns, userAns);
 
-    if (answer) {
+    if (userAns) {
       try {
-        const response = await api.post("/solvequiz", { answer });
+        const token = JSON.parse(localStorage.getItem("quizToken"));
+        const response = api.post("/solvequiz", {
+          id,
+          qn,
+          crtAns,
+          userAns,
+          token,
+        });
 
-        if (response.data.success) {
-          toast.success(response.data.message);
-          setAnswerInput(false);
+        if (response?.data?.success) {
+          toast.success(response?.data?.message);
+          setPage(page + 1);
+        } else {
+          console.log(response?.data?.message);
         }
       } catch (error) {
-        toast.error(error);
+        console.log(error.message);
       }
     } else {
-      toast.error("answer is mandatory");
+      toast.error("choose the answer");
     }
   };
 
-  const showAnswerinput = async (qnId) => {
-    setAnswerInput(true);
-    // console.log(qnId);
-
-    try {
-      const response = await api.post("/singlequiz", { qnId });
-      if (response.data.success) {
-        setSingleQuiz(response.data.singleQuiz);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleRadioValue = (e) => {
+    setRadioVal(e.target.value);
   };
+
   return (
     <>
-      <h1>All Quiz</h1>
-
-      <div style={{ width: "100%" }}>
+      <div>
         {allQuiz?.length ? (
-          <div>
+          <div className="allQuizAnsParent">
             {allQuiz.map((quiz) => (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-around",
-                  width: "48%",
-                  flexWrap: "wrap",
-                  border: "1px solid green",
-                  marginLeft: "1%",
-                }}
-                key={quiz._id}
-              >
-                <h2
-                  style={{
-                    backgroundColor: "aqua",
-                  }}
-                >
-                  Question - {quiz.qn}
-                </h2>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    width: "100%",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <h2
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      width: "48%",
-                      flexWrap: "wrap",
-                      backgroundColor: "grey",
-                    }}
-                  >
-                    Option A - {quiz.ansOne}
-                  </h2>
-                  <h2
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      width: "48%",
-                      flexWrap: "wrap",
-                      backgroundColor: "grey",
-                    }}
-                  >
-                    Option B - {quiz.ansTwo}
-                  </h2>
-                  <h2
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      width: "48%",
-                      flexWrap: "wrap",
-                      backgroundColor: "grey",
-                    }}
-                  >
-                    Option C - {quiz.ansThree}
-                  </h2>
-                  <h2
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      width: "48%",
-                      flexWrap: "wrap",
-                      backgroundColor: "grey",
-                    }}
-                  >
-                    Option D - {quiz.ansFour}
-                  </h2>
-
-                  {!answerInput && (
-                    <button onClick={() => showAnswerinput(quiz._id)}>
-                      Solve Quiz
-                    </button>
-                  )}
+              <div key={quiz._id}>
+                <h2>Question - {quiz.qn}</h2>
+                <div className="allRadioParent">
+                  <div>
+                    <input
+                      type="radio"
+                      name="answers"
+                      value={quiz.ansOne}
+                      onClick={handleRadioValue}
+                    />
+                    <label>A - {quiz.ansOne}</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      name="answers"
+                      value={quiz.ansTwo}
+                      onClick={handleRadioValue}
+                    />
+                    <label>B - {quiz.ansTwo}</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      name="answers"
+                      value={quiz.ansThree}
+                      onClick={handleRadioValue}
+                    />
+                    <label>C - {quiz.ansThree}</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      name="answers"
+                      value={quiz.ansFour}
+                      onClick={handleRadioValue}
+                    />
+                    <label>D - {quiz.ansFour}</label>
+                  </div>
                 </div>
+
+                <button
+                  onClick={() =>
+                    nextQn(quiz._id, quiz.qn, quiz.correctAnswer, radioVal)
+                  }
+                >
+                  Next
+                </button>
               </div>
             ))}
-
-            {answerInput && (
-              <form onSubmit={handleSubmit}>
-                <input
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="Enter your Answer"
-                  name="answer"
-                />
-                <input
-                  style={{
-                    backgroundColor: "greenyellow",
-                    marginBottom: "1%",
-                  }}
-                  type="submit"
-                  value="Submit Answer"
-                />
-              </form>
-            )}
           </div>
         ) : (
           <div>No Quiz</div>
         )}
       </div>
-
-      <button onClick={() => setPage(page - 1)}>Previous</button>
-      <button onClick={() => setPage(page + 1)}>Next</button>
     </>
   );
 };

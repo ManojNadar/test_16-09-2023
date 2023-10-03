@@ -1,10 +1,12 @@
 import Quiz from "../Models/QuizModel.js";
+import jwt from "jsonwebtoken";
+import User from "../Models/UserModel.js";
 
 export const AllQuiz = async (req, res) => {
   try {
     const { page, limit = 1 } = req.body;
 
-    console.log(page);
+    // console.log(page);
 
     const skipValue = (parseInt(page) - 1) * parseInt(limit);
     const limitValue = parseInt(limit);
@@ -34,42 +36,57 @@ export const AllQuiz = async (req, res) => {
 
 export const SolveQuiz = async (req, res) => {
   try {
-    const { answer, qnId } = req.body;
+    const { id, qn, crtAns, userAns, token } = req.body;
 
-    console.log(answer);
+    console.log(id, qn, crtAns, userAns, token);
 
-    if (!answer)
+    if (!id || !qn || !crtAns || !userAns) {
       return res.status(404).json({
         success: false,
-        message: "answer is required",
+        message: "all details are mandatory",
       });
-
-    // console.log(quiz);
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-export const singleQuiz = async (req, res) => {
-  try {
-    const { qnId } = req.body;
-
-    console.log(qnId);
-
-    if (!qnId)
+    }
+    if (!token) {
       return res.status(404).json({
         success: false,
-        message: "answer is required",
+        message: "token is required",
       });
+    }
 
-    const quiz = await Quiz.findById(qnId);
+    const decodeToken = jwt.verify(token, process.env.SECRET_KEY);
 
-    if (quiz) {
+    if (!decodeToken) {
+      return res.status(404).json({
+        success: false,
+        message: "not a valid token",
+      });
+    }
+
+    const userId = decodeToken?.userId;
+    // console.log(userId);
+    const user = await User.findById(userId);
+    // console.log(user);
+
+    const findQuiz = await Quiz.findById(id);
+    // console.log(findQuiz);
+
+    if (findQuiz) {
+      const ansObj = {
+        qn,
+        userAns,
+      };
+
+      user.answer.push(ansObj);
+      // await user.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "answer submitted",
+      });
+    } else {
       return res.status(200).json({
         success: false,
-        singleQuiz: quiz,
+        message: "no quiz found",
       });
     }
 

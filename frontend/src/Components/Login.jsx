@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import api from "./ApiConfig";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { quizContext } from "./Context/AuthContext";
 
 const Login = () => {
@@ -45,7 +45,7 @@ const Login = () => {
   };
   return (
     <>
-      <div>
+      <div className="formContainer">
         <h1>Login</h1>
         <form onSubmit={handleSubmit}>
           <div>
@@ -72,6 +72,9 @@ const Login = () => {
             <input type="submit" value="Login" />
           </div>
         </form>
+        <p>
+          Already an User ? <NavLink to="/register">Register</NavLink>
+        </p>
       </div>
     </>
   );

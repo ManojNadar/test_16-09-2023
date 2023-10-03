@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import api from "./ApiConfig";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Register = () => {
@@ -8,7 +8,7 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
-    role: "Student",
+    role: "",
   });
 
   const route = useNavigate();
@@ -31,7 +31,7 @@ const Register = () => {
           name: "",
           email: "",
           password: "",
-          role: "Student",
+          role: "user",
         });
         route("/login");
       } else {
@@ -43,7 +43,7 @@ const Register = () => {
   };
   return (
     <>
-      <div>
+      <div className="formContainer">
         <h1>Register</h1>
         <form onSubmit={handleSubmit}>
           <div>
@@ -70,7 +70,7 @@ const Register = () => {
             <select value={user.role} name="role" onChange={handleChange}>
               <option>Select Role</option>
               <option value="Admin">Admin</option>
-              <option value="Student">Student</option>
+              <option value="user">User</option>
             </select>
           </div>
           <br />
@@ -88,6 +88,10 @@ const Register = () => {
             <input type="submit" value="Register" />
           </div>
         </form>
+
+        <p>
+          Already an User ? <NavLink to="/login">Login</NavLink>
+        </p>
       </div>
     </>
   );

@@ -10,9 +10,9 @@ const Home = () => {
       <h1>Home</h1>
 
       <div>
-        {state?.currentuser?.role == "Student" && (
+        {state?.currentuser?.role == "user" && (
           <div>
-            <button onClick={()=> route('/solvequiz')}>Solve Quiz</button>
+            <button onClick={() => route("/solvequiz")}>Solve Quiz</button>
           </div>
         )}
       </div>

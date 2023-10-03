@@ -60,7 +60,7 @@ const AddQuiz = () => {
   }, []);
   return (
     <>
-      <div>
+      <div className="formContainer">
         <h1>Add Quiz</h1>
         <form onSubmit={handleSubmit}>
           <div>
@@ -115,7 +115,6 @@ const AddQuiz = () => {
           <br />
           <div>
             <input
-              style={{ backgroundColor: "aqua" }}
               type="text"
               placeholder="Correct Answer"
               onChange={handleChange}

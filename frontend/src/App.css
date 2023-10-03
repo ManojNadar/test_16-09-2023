@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,85 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+/* --------------------------- */
+
+/* Navbar */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+  font-weight: bolder;
+  font-size: 1.5em;
+}
+
+nav {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 1.2%;
+  border-bottom: 1px solid rgb(62, 61, 61);
+  background-color: aliceblue;
+}
+
+.logo {
+  width: 20%;
+  cursor: pointer;
+}
+
+.allNavs {
+  width: 30%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.profSection {
+  display: flex;
+  width: 20%;
+  justify-content: space-around;
+}
+
+/* solveQuiz */
+
+.allQuizAnsParent {
+  width: 100%;
+  margin-top: 2%;
+  padding-left: 1%;
+}
+
+.allRadioParent > div {
+  margin: 1% 0;
+}
+
+/* addQuiz */
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.formContainer > form {
+  width: 25%;
+  margin-top: 1%;
+  border: 1px solid rgb(222, 220, 220);
+  box-shadow: 2px 1px 15px;
+  border-radius: 15px;
+}
+.formContainer > form > div {
+  width: 90%;
+  margin: 2% auto;
+}
+.formContainer > form > div > input {
+  width: 100%;
+  height: 30px;
+  padding-left: 2%;
 }
