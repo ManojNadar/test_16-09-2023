@@ -6,9 +6,13 @@ import toast from "react-hot-toast";
 
 const SolveQuiz = () => {
   const [allQuiz, setAllQuiz] = useState([]);
+  const [againQuiz, setAgainQuiz] = useState([]);
   const [page, setPage] = useState(1);
   const [radioVal, setRadioVal] = useState("");
-  //   console.log(allQuiz);
+  const [counter, setCounter] = useState();
+
+  // console.log(allQuiz);
+  // console.log(againQuiz);
 
   const route = useNavigate();
   const { state } = useContext(quizContext);
@@ -20,13 +24,14 @@ const SolveQuiz = () => {
 
         if (response.data.success) {
           setAllQuiz(response.data.allQuiz);
+          setAgainQuiz(response?.data?.allQuizAgain);
         }
       } catch (error) {
         console.log(error);
       }
     }
     getAllQuiz();
-  }, [page]);
+  }, [page, counter]);
 
   useEffect(() => {
     if (state?.currentuser?.role != "user") {
@@ -35,30 +40,26 @@ const SolveQuiz = () => {
   }, []);
 
   const nextQn = async (id, qn, crtAns, userAns) => {
-    console.log(id, qn, crtAns, userAns);
+    // console.log(id, qn, crtAns, userAns);
 
-    if (userAns) {
-      try {
-        const token = JSON.parse(localStorage.getItem("quizToken"));
-        const response = api.post("/solvequiz", {
-          id,
-          qn,
-          crtAns,
-          userAns,
-          token,
-        });
+    setPage(page + 1);
+    try {
+      const token = JSON.parse(localStorage.getItem("quizToken"));
+      const response = await api.post("/solvequiz", {
+        id,
+        qn,
+        crtAns,
+        userAns,
+        token,
+      });
 
-        if (response?.data?.success) {
-          toast.success(response?.data?.message);
-          setPage(page + 1);
-        } else {
-          console.log(response?.data?.message);
-        }
-      } catch (error) {
-        console.log(error.message);
+      if (response?.data?.success) {
+        toast.success(response?.data?.message);
+      } else {
+        console.log(response?.data?.message);
       }
-    } else {
-      toast.error("choose the answer");
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -66,9 +67,33 @@ const SolveQuiz = () => {
     setRadioVal(e.target.value);
   };
 
+  useEffect(() => {
+    if (againQuiz?.length) {
+      if (page > againQuiz?.length) {
+        route("/getresult");
+      }
+    }
+  }, [page, againQuiz, route]);
+
+  useEffect(() => {
+    let timeLeft = 30;
+    var countdownTimer = setInterval(countDown, 1000);
+    function countDown() {
+      if (timeLeft == 0) {
+        clearInterval(countdownTimer);
+        // setIsAnswerSubmitted(false);
+      } else {
+        timeLeft--;
+      }
+
+      setCounter(timeLeft);
+    }
+  }, [page]);
+
   return (
     <>
       <div>
+        {counter}
         {allQuiz?.length ? (
           <div className="allQuizAnsParent">
             {allQuiz.map((quiz) => (

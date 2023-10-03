@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import { Currentuser, Login, Register } from "./Controllers/UserControllers.js";
 import { AdminMiddleware } from "./Middlewares/AdminMiddleware.js";
 import { AddQuiz } from "./Controllers/AdminController.js";
-import { AllQuiz, SolveQuiz } from "./Controllers/AllQuiz.js";
+import { AllQuiz, GetResult, SolveQuiz } from "./Controllers/AllQuiz.js";
 
 const app = express();
 dotenv.config();
@@ -30,6 +30,7 @@ app.post("/currentuser", Currentuser);
 app.post("/addquiz", AdminMiddleware, AddQuiz);
 app.post("/allquiz", AllQuiz);
 app.post("/solvequiz", SolveQuiz);
+app.post("/getresult", GetResult);
 
 mongoose
   .connect(process.env.MONGO_URL)
